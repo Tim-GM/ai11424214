@@ -12,7 +12,7 @@ This example uses p5 preload function to create the classifier
 // Classifier Variable
 let classifier;
 // Model URL
-let imageModelURL = 'https://teachablemachine.withgoogle.com/models/zi3OandGe/';
+let imageModelURL = 'https://teachablemachine.withgoogle.com/models/0maFl99iv/';
 
 // Video
 let video;
@@ -22,96 +22,93 @@ let label = "";
 
 // Load the model first
 function preload() {
-  classifier = ml5.imageClassifier(imageModelURL + 'model.json');
+classifier = ml5.imageClassifier(imageModelURL + 'model.json');
+}
+
+function setup() {
+createCanvas(320, 260);
+// Create the video
+video = createCapture(VIDEO);
+video.size(320, 240);
+video.hide();
+
+flippedVideo = ml5.flipImage(video)
+// Start classifying
+classifyVideo();
 }
 
 function setup() {
 
-  createCanvas(320, 320);
+createCanvas(320, 320);
 
-  
 
-  // Create the video
 
-    var constraints = {
+// Create the video
 
-    audio: false,
+var constraints = {
 
-    video: {
+audio: false,
 
-      facingMode: {
+video: {
 
-        exact: "environment"
+facingMode: {
 
-      }
-
-    }   
-
-    //video: {
-
-      //facingMode: "user"
-
-    //}
-
-  };
-
-  video = createCapture(constraints);
-
-  video.size(320, 320);
-
-  video.hide();
-
-  flippedVideo = ml5.flipImage(video)
-
-  // Start classifying
-
-  classifyVideo();
+exact: "environment"
 
 }
+
 }
 
-  video = createCapture(constraints);
+//video: {
 
-  video.size(320, 320);
+//facingMode: "user"
 
-  video.hide();
+//}
 
-  flippedVideo = ml5.flipImage(video)
+};
 
-  // Start classifying
+video = createCapture(constraints);
 
-  classifyVideo();
+video.size(320, 320);
+
+video.hide();
+
+flippedVideo = ml5.flipImage(video)
+
+// Start classifying
+
+classifyVideo();
 
 }
 
 function draw() {
-  background(0);
-  // Draw the video
-  image(flippedVideo, 0, 0);
+background(0);
+// Draw the video
+image(flippedVideo, 0, 0);
 
-  // Draw the label
-  fill(255);
-  textSize(16);
-  textAlign(CENTER);
-  text(label, width / 2, height - 4);
+// Draw the label
+fill(255);
+textSize(16);
+textAlign(CENTER);
+text(label, width / 2, height - 4);
 }
 
 // Get a prediction for the current video frame
 function classifyVideo() {
-  flippedVideo = ml5.flipImage(video)
-  classifier.classify(flippedVideo, gotResult);
+flippedVideo = ml5.flipImage(video)
+classifier.classify(flippedVideo, gotResult);
 }
 
 // When we get a result
 function gotResult(error, results) {
-  // If there is an error
-  if (error) {
-    console.error(error);
-    return;
-  }
-  // The results are in an array ordered by confidence.
-  // console.log(results[0]);
-  label = results[0].label;
-  // Classifiy again!
-  classifyVideo();
+// If there is an error
+if (error) {
+console.error(error);
+return;
+}
+// The results are in an array ordered by confidence.
+// console.log(results[0]);
+label = results[0].label;
+// Classifiy again!
+classifyVideo();
 }
